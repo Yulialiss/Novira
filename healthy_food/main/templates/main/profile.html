@@ -1,0 +1,740 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мій профіль — NOVIRA</title>
+    <link rel="stylesheet" href="{% static 'main/style_prof.css' %}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="container py-2 d-flex justify-content-between align-items-center">
+
+        <a class="navbar-brand" href="{% url 'home' %}"
+           style="text-decoration: none;">
+            NOVIRA
+        </a>
+
+        <div class="d-flex gap-2 align-items-center">
+            <a href="{% url 'edit_profile' %}"
+               class="btn btn-outline-light btn-sm">
+                Профіль
+            </a>
+
+            <form method="post" action="{% url 'logout' %}" class="mb-0">
+                {% csrf_token %}
+                <button class="btn btn-outline-light btn-sm" type="submit">
+                    Вийти
+                </button>
+            </form>
+        </div>
+
+    </div>
+</nav>
+
+<main class="container py-4" id="nutritionApp"
+      data-search-url="{% url 'search_products' %}"
+      data-add-url="{% url 'add_food_entry' %}"
+      data-delete-template="{% url 'delete_food_entry' 999999 %}">
+
+    <div class="mb-4">
+        <div class="text-uppercase small fw-bold mb-2"
+             style="color: #849b78; letter-spacing: 2px;">
+            ТВІЙ ПРОСТІР ТУРБОТИ ПРО СЕБЕ
+        </div>
+
+        <h1 class="fw-bold mb-2">Мій профіль</h1>
+
+        <p class="text-muted mb-0">
+            Вітаємо, {{ request.user.username }}!
+            Твій раціон на {{ today|date:"d.m.Y" }}
+        </p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success mb-3">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card-custom">
+        <div class="row align-items-center g-4 text-center text-md-start">
+
+            <div class="col-12 col-md-4">
+                <div class="text-muted small mb-1">Спожито за день</div>
+
+                <div class="fw-bold text-accent">
+                    <span id="totalCalories">
+                        {{ totals.calories|floatformat:0 }}
+                    </span>
+                </div>
+
+                <div class="text-muted small">
+                    із <span id="dailyGoal">{{ daily_goal }}</span> ккал
+                </div>
+
+                <div class="progress mt-3">
+                    <div class="progress-bar"
+                         id="calorieProgress"
+                         role="progressbar"
+                         style="width: {% widthratio totals.calories daily_goal 100 %}%">
+                    </div>
+                </div>
+
+                <div class="text-muted small mt-2">
+                    Твій щоденний баланс
+                </div>
+            </div>
+
+            <div class="col-12 col-md-8">
+                <div class="row text-center g-3">
+
+                    <div class="col-4">
+                        <div class="rounded-4 p-3 h-100"
+                             style="background: #f3f4e9;">
+                            <div class="mb-2" style="font-size: 23px;">✿</div>
+                            <div class="text-muted small mb-1">Білки</div>
+                            <div class="fw-bold text-accent">
+                                <span id="totalProtein">
+                                    {{ totals.protein|floatformat:1 }}
+                                </span>
+                                <small>г</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-4">
+                        <div class="rounded-4 p-3 h-100"
+                             style="background: #f3f4e9;">
+                            <div class="mb-2" style="font-size: 23px;">✿</div>
+                            <div class="text-muted small mb-1">Жири</div>
+                            <div class="fw-bold text-accent">
+                                <span id="totalFat">
+                                    {{ totals.fat|floatformat:1 }}
+                                </span>
+                                <small>г</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-4">
+                        <div class="rounded-4 p-3 h-100"
+                             style="background: #f3f4e9;">
+                            <div class="mb-2" style="font-size: 23px;">✿</div>
+                            <div class="text-muted small mb-1">Вуглеводи</div>
+                            <div class="fw-bold text-accent">
+                                <span id="totalCarbs">
+                                    {{ totals.carbs|floatformat:1 }}
+                                </span>
+                                <small>г</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card-custom">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <div class="text-uppercase small fw-bold mb-1"
+                     style="color: #849b78; letter-spacing: 1.5px;">
+                    Про тебе
+                </div>
+                <h2 class="fs-5 fw-bold mb-0">Персональні параметри</h2>
+            </div>
+
+            <div style="font-size: 28px; color: #849b78;">✳</div>
+        </div>
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-6 col-md-3">
+                <div class="rounded-3 p-3 h-100"
+                     style="background: #f8f7f1;">
+                    <div class="text-muted small mb-2">Вік</div>
+                    <div class="fw-bold">
+                        {{ profile.age|default:"Не вказано" }}
+                        {% if profile.age %}<small>років</small>{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="rounded-3 p-3 h-100"
+                     style="background: #f8f7f1;">
+                    <div class="text-muted small mb-2">Зріст</div>
+                    <div class="fw-bold">
+                        {% if profile.height %}
+                            {{ profile.height }} <small>см</small>
+                        {% else %}
+                            Не вказано
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="rounded-3 p-3 h-100"
+                     style="background: #f8f7f1;">
+                    <div class="text-muted small mb-2">Вага</div>
+                    <div class="fw-bold">
+                        {% if profile.weight %}
+                            {{ profile.weight }} <small>кг</small>
+                        {% else %}
+                            Не вказано
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="rounded-3 p-3 h-100"
+                     style="background: #f8f7f1;">
+                    <div class="text-muted small mb-2">Мета</div>
+                    <div class="fw-bold text-accent">
+                        {{ profile.get_goal_display }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <a href="{% url 'calories' %}" class="btn btn-accent px-4 py-2">
+            Розрахувати норму →
+        </a>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-end mb-3">
+        <div>
+            <div class="text-uppercase small fw-bold mb-1"
+                 style="color: #849b78; letter-spacing: 1.5px;">
+                Харчування
+            </div>
+            <h2 class="fs-4 fw-bold mb-0">Мій раціон</h2>
+        </div>
+
+        <span class="text-muted small">
+            {{ today|date:"d.m.Y" }}
+        </span>
+    </div>
+
+    {% for meal in meals %}
+        <div class="card-custom">
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                    <div class="fw-bold fs-5">{{ meal.name }}</div>
+                    <div class="text-muted small"
+                         id="mealCalories-{{ meal.key }}">
+                        0 ккал
+                    </div>
+                </div>
+
+                <button type="button"
+                        class="btn btn-accent rounded-circle add-food-btn d-flex align-items-center justify-content-center"
+                        data-meal="{{ meal.key }}"
+                        data-meal-name="{{ meal.name }}"
+                        aria-label="Додати продукт">
+                    +
+                </button>
+            </div>
+
+            <div id="entries-{{ meal.key }}">
+                {% for entry in meal.entries %}
+                    <div class="food-row d-flex justify-content-between align-items-center gap-2"
+                         data-entry-id="{{ entry.id }}"
+                         data-meal="{{ meal.key }}"
+                         data-calories="{{ entry.calories_total }}"
+                         data-protein="{{ entry.protein_total }}"
+                         data-fat="{{ entry.fat_total }}"
+                         data-carbs="{{ entry.carbs_total }}">
+
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold small">
+                                {{ entry.product.name }}
+                            </div>
+
+                            <div class="text-muted" style="font-size: .8rem;">
+                                {{ entry.grams|floatformat:0 }} г ·
+                                {{ entry.calories_total|floatformat:0 }} ккал
+                                (Б {{ entry.protein_total|floatformat:1 }} ·
+                                Ж {{ entry.fat_total|floatformat:1 }} ·
+                                В {{ entry.carbs_total|floatformat:1 }})
+                            </div>
+                        </div>
+
+                        <button type="button"
+                                class="remove-entry"
+                                data-entry-id="{{ entry.id }}">
+                            Видалити
+                        </button>
+                    </div>
+                {% empty %}
+                    <div class="text-muted small py-2 empty-meal">
+                        Поки що продуктів немає. Додай щось корисне ✿
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    {% endfor %}
+
+    <div class="text-center py-3">
+        <div style="color: #849b78; font-size: 23px;">✿</div>
+        <p class="text-muted small mb-0">
+            Маленькі кроки — великі зміни.
+        </p>
+        <p class="text-muted small mt-1">
+            NOVIRA · Турбота про себе у твоєму ритмі
+        </p>
+    </div>
+
+</main>
+
+<div class="modal fade" id="foodModal" tabindex="-1"
+     aria-labelledby="foodModalTitle" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content p-2">
+
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <div class="text-uppercase small fw-bold mb-1"
+                         style="color: #849b78; letter-spacing: 1px;">
+                        Твій раціон
+                    </div>
+
+                    <h5 class="modal-title fw-bold" id="foodModalTitle">
+                        Додати продукт
+                    </h5>
+
+                    <div class="text-muted small mt-1"
+                         id="selectedMealName"></div>
+                </div>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Закрити"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <label for="productSearch" class="form-label small fw-semibold">
+                    Знайди продукт
+                </label>
+
+                <input type="search"
+                       id="productSearch"
+                       class="form-control mb-3"
+                       placeholder="Наприклад, яблуко..."
+                       autocomplete="off">
+
+                <div id="productResults" class="small mb-3">
+                    Введіть назву продукту...
+                </div>
+
+                <div id="chosenProductBox"
+                     hidden
+                     class="p-3 rounded-3 mb-3">
+
+                    <div class="fw-bold small mb-3"
+                         id="chosenProductName"></div>
+
+                    <label for="productGrams"
+                           class="text-muted small mb-2">
+                        Кількість у грамах
+                    </label>
+
+                    <input type="number"
+                           id="productGrams"
+                           class="form-control mb-3"
+                           value="100"
+                           min="1"
+                           max="10000">
+
+                    <div class="small mb-3" id="chosenProductMacros"></div>
+
+                    <button type="button"
+                            id="confirmAdd"
+                            class="btn btn-accent w-100 py-2">
+                        Додати до раціону →
+                    </button>
+                </div>
+
+                <div id="foodMessage"
+                     class="small text-center"
+                     role="status"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="csrfForm" hidden>
+    {% csrf_token %}
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+(() => {
+    const app = document.getElementById("nutritionApp");
+
+    const modal = new bootstrap.Modal(
+        document.getElementById("foodModal")
+    );
+
+    const searchUrl = app.dataset.searchUrl;
+    const addUrl = app.dataset.addUrl;
+    const deleteTemplate = app.dataset.deleteTemplate;
+
+    const csrfToken = document.querySelector(
+        '#csrfForm [name="csrfmiddlewaretoken"]'
+    ).value;
+
+    const searchInput = document.getElementById("productSearch");
+    const resultsBox = document.getElementById("productResults");
+    const chosenBox = document.getElementById("chosenProductBox");
+    const chosenName = document.getElementById("chosenProductName");
+    const chosenMacros = document.getElementById("chosenProductMacros");
+    const gramsInput = document.getElementById("productGrams");
+    const messageBox = document.getElementById("foodMessage");
+    const confirmButton = document.getElementById("confirmAdd");
+
+    let selectedMeal = null;
+    let selectedProduct = null;
+    let searchSequence = 0;
+    let timer;
+
+    const num = (v, d = 1) =>
+        Number(v).toLocaleString("uk-UA", {
+            maximumFractionDigits: d
+        });
+
+    function renderMacros() {
+        if (!selectedProduct) return;
+
+        const g = Number(gramsInput.value);
+
+        if (g <= 0 || !Number.isFinite(g)) {
+            chosenMacros.textContent = "Вкажіть кількість у грамах.";
+            return;
+        }
+
+        const f = g / 100;
+
+        chosenMacros.textContent =
+            `${num(selectedProduct.calories * f)} ккал · ` +
+            `Б ${num(selectedProduct.protein * f)} · ` +
+            `Ж ${num(selectedProduct.fat * f)} · ` +
+            `В ${num(selectedProduct.carbs * f)}`;
+    }
+
+    function showProducts(products) {
+        resultsBox.replaceChildren();
+
+        if (!products || !products.length) {
+            resultsBox.textContent = "Нічого не знайдено.";
+            return;
+        }
+
+        products.forEach(p => {
+            const btn = document.createElement("button");
+
+            btn.type = "button";
+            btn.className = "product-result";
+
+            const name = document.createElement("div");
+            name.className = "fw-semibold";
+            name.textContent = p.name;
+
+            const calories = document.createElement("div");
+            calories.className = "text-muted small";
+            calories.textContent =
+                `${num(p.calories)} ккал на 100 г`;
+
+            btn.append(name, calories);
+
+            btn.onclick = () => {
+                selectedProduct = p;
+                chosenName.textContent = p.name;
+                chosenBox.hidden = false;
+                gramsInput.value = 100;
+                messageBox.textContent = "";
+                renderMacros();
+            };
+
+            resultsBox.appendChild(btn);
+        });
+    }
+
+    async function search() {
+        const seq = ++searchSequence;
+        const q = searchInput.value.trim();
+
+        resultsBox.textContent = "Шукаємо...";
+        chosenBox.hidden = true;
+        selectedProduct = null;
+
+        try {
+            const res = await fetch(
+                `${searchUrl}?q=${encodeURIComponent(q)}`
+            );
+
+            if (!res.ok) {
+                throw new Error("Не вдалося знайти продукти.");
+            }
+
+            const data = await res.json();
+
+            if (seq === searchSequence) {
+                showProducts(data.products || []);
+            }
+        } catch (error) {
+            if (seq === searchSequence) {
+                resultsBox.textContent =
+                    error.message || "Помилка завантаження.";
+            }
+        }
+    }
+
+    document.querySelectorAll(".add-food-btn").forEach(btn => {
+        btn.onclick = () => {
+            selectedMeal = btn.dataset.meal;
+
+            document.getElementById("selectedMealName").textContent =
+                btn.dataset.mealName;
+
+            searchInput.value = "";
+            chosenBox.hidden = true;
+            selectedProduct = null;
+            messageBox.textContent = "";
+
+            modal.show();
+            search();
+        };
+    });
+
+    searchInput.oninput = () => {
+        clearTimeout(timer);
+        timer = setTimeout(search, 200);
+    };
+
+    gramsInput.oninput = renderMacros;
+
+    function recalculate() {
+        const t = {
+            calories: 0,
+            protein: 0,
+            fat: 0,
+            carbs: 0
+        };
+
+        document.querySelectorAll(".food-row").forEach(r => {
+            t.calories += Number(r.dataset.calories) || 0;
+            t.protein += Number(r.dataset.protein) || 0;
+            t.fat += Number(r.dataset.fat) || 0;
+            t.carbs += Number(r.dataset.carbs) || 0;
+        });
+
+        document.getElementById("totalCalories").textContent =
+            num(t.calories, 0);
+
+        document.getElementById("totalProtein").textContent =
+            num(t.protein);
+
+        document.getElementById("totalFat").textContent =
+            num(t.fat);
+
+        document.getElementById("totalCarbs").textContent =
+            num(t.carbs);
+
+        const goal = Number(
+            document.getElementById("dailyGoal").textContent
+        );
+
+        const percent = goal > 0
+            ? (t.calories / goal) * 100
+            : 0;
+
+        document.getElementById("calorieProgress").style.width =
+            Math.min(percent, 100) + "%";
+
+        ["breakfast", "snack", "lunch", "dinner"].forEach(m => {
+            let cal = 0;
+
+            document.querySelectorAll(
+                `.food-row[data-meal="${m}"]`
+            ).forEach(r => {
+                cal += Number(r.dataset.calories || 0);
+            });
+
+            const el = document.getElementById(`mealCalories-${m}`);
+
+            if (el) {
+                el.textContent = `${num(cal, 0)} ккал`;
+            }
+        });
+    }
+
+    confirmButton.onclick = async () => {
+        if (!selectedProduct || !selectedMeal) return;
+
+        const grams = Number(gramsInput.value);
+
+        if (!Number.isFinite(grams) || grams <= 0 || grams > 10000) {
+            messageBox.textContent =
+                "Вкажіть кількість від 1 до 10000 грамів.";
+            return;
+        }
+
+        confirmButton.disabled = true;
+        messageBox.textContent = "";
+
+        try {
+            const res = await fetch(addUrl, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken,
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                    product_id: selectedProduct.id,
+                    meal_type: selectedMeal,
+                    grams: grams
+                })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || "Не вдалося додати продукт.");
+            }
+
+            const container = document.getElementById(
+                `entries-${selectedMeal}`
+            );
+
+            container.querySelector(".empty-meal")?.remove();
+
+            const row = document.createElement("div");
+
+            row.className =
+                "food-row d-flex justify-content-between align-items-center gap-2";
+
+            row.dataset.entryId = data.id;
+            row.dataset.meal = selectedMeal;
+            row.dataset.calories = data.calories;
+            row.dataset.protein = data.protein;
+            row.dataset.fat = data.fat;
+            row.dataset.carbs = data.carbs;
+
+            const info = document.createElement("div");
+            info.className = "flex-grow-1";
+
+            const productName = document.createElement("div");
+            productName.className = "fw-semibold small";
+            productName.textContent = data.name;
+
+            const details = document.createElement("div");
+            details.className = "text-muted";
+            details.style.fontSize = ".8rem";
+            details.textContent =
+                `${num(data.grams, 0)} г · ${num(data.calories)} ккал ` +
+                `(Б ${num(data.protein)} · Ж ${num(data.fat)} · ` +
+                `В ${num(data.carbs)})`;
+
+            info.append(productName, details);
+
+            const removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.className = "remove-entry";
+            removeBtn.dataset.entryId = data.id;
+            removeBtn.textContent = "Видалити";
+
+            row.append(info, removeBtn);
+            container.appendChild(row);
+
+            recalculate();
+            modal.hide();
+
+        } catch (e) {
+            messageBox.textContent = e.message || "Помилка";
+        } finally {
+            confirmButton.disabled = false;
+        }
+    };
+
+    document.addEventListener("click", async e => {
+        const btn = e.target.closest(".remove-entry");
+
+        if (!btn || !confirm("Видалити цей продукт із раціону?")) {
+            return;
+        }
+
+        btn.disabled = true;
+
+        try {
+            const deleteUrl = deleteTemplate.replace(
+                "999999",
+                btn.dataset.entryId
+            );
+
+            const res = await fetch(deleteUrl, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken
+                }
+            });
+
+            if (!res.ok) {
+                throw new Error("Не вдалося видалити продукт.");
+            }
+
+            const row = btn.closest(".food-row");
+            const container = row.parentElement;
+
+            row.remove();
+
+            if (!container.querySelector(".food-row")) {
+                const empty = document.createElement("div");
+
+                empty.className =
+                    "text-muted small py-2 empty-meal";
+
+                empty.textContent =
+                    "Поки що продуктів немає. Додай щось корисне ✿";
+
+                container.appendChild(empty);
+            }
+
+            recalculate();
+
+        } catch (error) {
+            alert(error.message || "Не вдалося видалити.");
+        } finally {
+            btn.disabled = false;
+        }
+    });
+
+    recalculate();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,320 @@
+
+:root {
+    --green: #203b2e;
+    --green-light: #345640;
+    --olive: #849b78;
+    --olive-pale: #e8eddf;
+    --cream: #f4f1e8;
+    --white: #fffefa;
+    --text: #263b30;
+    --muted: #7b8276;
+    --border: #e5e5d9;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+}
+
+/* Навігація */
+.navbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    box-shadow: 0 4px 20px rgba(32, 59, 46, .035);
+}
+
+.navbar-brand {
+    color: var(--green) !important;
+    font-size: 27px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.navbar .btn-outline-light {
+    color: var(--green);
+    border: 1px solid #dce2d5;
+    border-radius: 10px;
+    padding: 9px 15px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.navbar .btn-outline-light:hover {
+    color: white;
+    background: var(--green);
+    border-color: var(--green);
+}
+
+/* Основний контейнер */
+#nutritionApp {
+    max-width: 1060px;
+    padding-top: 38px !important;
+    padding-bottom: 55px !important;
+}
+
+#nutritionApp h1 {
+    color: var(--green);
+    font-size: clamp(28px, 4vw, 38px);
+    letter-spacing: -1px;
+}
+
+#nutritionApp h2 {
+    color: var(--green);
+}
+
+.text-muted {
+    color: var(--muted) !important;
+}
+
+.text-accent {
+    color: var(--green-light) !important;
+}
+
+/* Картки */
+.card-custom {
+    background: var(--white);
+    border: 1px solid rgba(91, 112, 78, .12);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 28px rgba(37, 58, 43, .045);
+    transition: box-shadow .25s;
+}
+
+.card-custom:hover {
+    box-shadow: 0 12px 34px rgba(37, 58, 43, .075);
+}
+
+/* Калорії */
+#totalCalories {
+    font-size: clamp(34px, 5vw, 46px);
+    letter-spacing: -1.5px;
+}
+
+#dailyGoal {
+    color: var(--green);
+    font-weight: 700;
+}
+
+.progress {
+    height: 9px;
+    background: #e9e9df;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #849b78, #345640);
+    border-radius: 20px;
+    transition: width .4s ease;
+}
+
+/* Кнопки */
+.btn-accent {
+    background: var(--green);
+    color: white;
+    font-weight: 600;
+    border: 1px solid var(--green);
+    border-radius: 11px;
+    transition: .2s;
+}
+
+.btn-accent:hover {
+    background: var(--green-light);
+    border-color: var(--green-light);
+    color: white;
+    transform: translateY(-1px);
+}
+
+#nutritionApp .btn-outline-light {
+    color: var(--green);
+    border-color: #cfd8c7;
+    border-radius: 10px;
+}
+
+#nutritionApp .btn-outline-light:hover {
+    color: white;
+    background: var(--green);
+}
+
+/* Прийоми їжі */
+.food-row {
+    border-bottom: 1px solid #ecece3;
+    padding: 15px 0;
+}
+
+.food-row:last-child {
+    border-bottom: 0;
+}
+
+.food-row .fw-semibold {
+    color: var(--green);
+    font-size: 14px !important;
+}
+
+.remove-entry {
+    color: #a34e43;
+    background: #fbefeb;
+    border: 0;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 10px;
+    white-space: nowrap;
+    transition: .2s;
+}
+
+.remove-entry:hover {
+    background: #f4dcd5;
+}
+
+.add-food-btn {
+    background: var(--olive-pale);
+    color: var(--green);
+    border: 0;
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 23px !important;
+    transition: .2s;
+    flex-shrink: 0;
+}
+
+.add-food-btn:hover {
+    background: var(--green);
+    color: white;
+    transform: rotate(90deg);
+}
+
+.empty-meal {
+    background: #f8f7f1;
+    border-radius: 10px;
+    padding: 15px !important;
+}
+
+/* Поля введення */
+.form-control {
+    background: #faf9f4;
+    color: var(--text);
+    border: 1px solid #dfe3d8;
+    border-radius: 11px;
+    padding: 12px 14px;
+}
+
+.form-control:focus {
+    background: white;
+    color: var(--text);
+    border-color: var(--olive);
+    box-shadow: 0 0 0 4px rgba(132, 155, 120, .14);
+}
+
+/* Модальне вікно */
+.modal-content {
+    background: var(--white);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    box-shadow: 0 24px 70px rgba(32, 59, 46, .16);
+}
+
+.modal-header {
+    padding: 18px 18px 8px;
+}
+
+.modal-title {
+    color: var(--green);
+    font-size: 22px !important;
+}
+
+.modal-body {
+    padding: 18px;
+}
+
+.btn-close {
+    opacity: .65;
+}
+
+#chosenProductBox {
+    background: #f5f4ec !important;
+    border: 1px solid #dfe5d7 !important;
+    border-radius: 14px;
+}
+
+#chosenProductName {
+    color: var(--green) !important;
+}
+
+.product-result {
+    display: block;
+    padding: 13px;
+    border-bottom: 1px solid #e9e9df;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text);
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    width: 100%;
+    text-align: left;
+    border-radius: 9px;
+    transition: background .2s;
+}
+
+.product-result:hover {
+    background: var(--olive-pale);
+}
+
+#foodMessage {
+    color: #a34e43;
+}
+
+/* Повідомлення */
+.alert-success {
+    background: #e5eddf !important;
+    color: var(--green) !important;
+    border: 1px solid #d3dfc9 !important;
+    border-radius: 12px;
+}
+
+/* Мобільна версія */
+@media (max-width: 576px) {
+    .navbar .container {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .navbar-brand {
+        font-size: 24px;
+    }
+
+    .navbar .btn-outline-light {
+        padding: 8px 10px;
+    }
+
+    #nutritionApp {
+        padding-top: 25px !important;
+    }
+
+    .card-custom {
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    #totalCalories {
+        font-size: 36px;
+    }
+
+    .food-row {
+        align-items: flex-start !important;
+    }
+
+    .remove-entry {
+        padding: 7px;
+    }
+}

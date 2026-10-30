@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NOVIRA — турбота про себе</title>
+
+    <link rel="stylesheet" href="{% static 'main/style.css' %}">
+</head>
+
+<body>
+
+    <header>
+        <a href="{% url 'home' %}" class="logo">
+            NOVIRA
+        </a>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}" class="login-btn">
+                Мій профіль
+            </a>
+        {% else %}
+            <a href="{% url 'login' %}" class="login-btn">
+                Увійти
+            </a>
+        {% endif %}
+    </header>
+
+    <main>
+        <div class="text">
+
+            <p class="subtitle">
+                ТВІЙ ПРОСТІР ТУРБОТИ ПРО СЕБЕ
+            </p>
+
+            <h1>
+                Турбота про себе —
+                <span>у твоєму ритмі.</span>
+            </h1>
+
+            <p class="description">
+                NOVIRA — це простір для корисних звичок,
+                смачних рецептів і натхнення. Знаходь баланс,
+                відкривай нові можливості та приділяй час собі щодня.
+            </p>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}" class="main-btn">
+                    Перейти до профілю →
+                </a>
+            {% else %}
+                <a href="{% url 'register' %}" class="main-btn">
+                    Приєднатися →
+                </a>
+            {% endif %}
+
+        </div>
+
+        <div class="card">
+            ✿
+        </div>
+    </main>
+
+    <footer>
+        © 2026 NOVIRA — простір для тебе
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,315 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор калорій — NOVIRA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f8f7f1;
+            color: #34382f;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background: #343c32;
+            padding: 18px 0;
+        }
+
+        .navbar-brand {
+            color: #fff;
+            font-size: 25px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .navbar-brand:hover {
+            color: #fff;
+        }
+
+        .brand-dot {
+            color: #a7bb96;
+        }
+
+        .back-link {
+            color: #708566;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            color: #4f6547;
+        }
+
+        .page-label {
+            color: #849b78;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .main-card {
+            background: #fff;
+            border: 1px solid #eeeee5;
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(54, 65, 48, 0.05);
+            overflow: hidden;
+        }
+
+        .section-title {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .result-card {
+            background: #f3f4e9;
+            border-radius: 18px;
+            padding: 24px;
+        }
+
+        .result-card.primary {
+            background: #e8f0e3;
+            border: 1px solid #dce7d5;
+        }
+
+        .result-number {
+            color: #617b55;
+            font-size: clamp(30px, 5vw, 40px);
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .result-unit {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .data-list {
+            border: 0;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .data-list .list-group-item {
+            background: #f8f7f1;
+            border-color: #eeeee5;
+            padding: 15px 18px;
+        }
+
+        .btn-novira {
+            background: #849b78;
+            color: #fff;
+            border: 1px solid #849b78;
+            border-radius: 12px;
+            padding: 12px 22px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-novira:hover {
+            background: #6f8664;
+            border-color: #6f8664;
+            color: #fff;
+        }
+
+        .btn-outline-novira {
+            color: #718666;
+            border: 1px solid #849b78;
+            border-radius: 12px;
+            padding: 11px 20px;
+            font-weight: 600;
+        }
+
+        .btn-outline-novira:hover {
+            background: #849b78;
+            color: #fff;
+        }
+
+        .notice {
+            background: #f3f4e9;
+            border: 1px solid #e4e8d9;
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .footer-text {
+            color: #8b8e83;
+            font-size: 13px;
+        }
+
+        @media (max-width: 576px) {
+            .main-card {
+                border-radius: 18px;
+            }
+
+            .card-content {
+                padding: 22px !important;
+            }
+
+            .result-card {
+                padding: 20px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a class="navbar-brand text-decoration-none" href="{% url 'home' %}">
+            NOVIRA<span class="brand-dot"></span>
+        </a>
+
+        <a href="{% url 'profile' %}"
+           class="btn btn-outline-light btn-sm rounded-pill px-3">
+            ← Профіль
+        </a>
+    </div>
+</nav>
+
+<main class="container py-4 py-md-5">
+
+    <div class="mb-4">
+        <div class="page-label mb-2">Турбота про себе</div>
+        <h1 class="section-title mb-2">Калькулятор калорій</h1>
+        <p class="text-secondary mb-0">
+            Дізнайся, скільки енергії потрібно твоєму організму щодня.
+        </p>
+    </div>
+
+    <div class="main-card mx-auto" style="max-width: 780px;">
+        <div class="card-content p-4 p-md-5">
+
+            {% if bmr is not None and daily_calories is not None %}
+
+                <div class="row g-3 mb-4">
+
+                    <div class="col-12 col-md-6">
+                        <div class="result-card h-100">
+                            <div class="small text-secondary mb-2">
+                                Базальний обмін речовин
+                            </div>
+
+                            <div class="result-number">
+                                {{ bmr }}
+                                <span class="result-unit">ккал</span>
+                            </div>
+
+                            <p class="small text-secondary mb-0 mt-2">
+                                Орієнтовні витрати енергії організму у стані спокою.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <div class="result-card primary h-100">
+                            <div class="small text-secondary mb-2">
+                                Твоя добова норма
+                            </div>
+
+                            <div class="result-number">
+                                {{ daily_calories }}
+                                <span class="result-unit">ккал</span>
+                            </div>
+
+                            <p class="small mb-0 mt-2">
+                                {% if profile.goal == "lose" %}
+                                    Мета: зменшення маси тіла
+                                {% elif profile.goal == "gain" %}
+                                    Мета: збільшення маси тіла
+                                {% else %}
+                                    Мета: підтримання маси тіла
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mb-4">
+                    <h2 class="fs-5 fw-bold mb-3">
+                        <span style="color: #849b78;">✳</span>
+                        Дані для розрахунку
+                    </h2>
+
+                    <div class="list-group data-list">
+                        <div class="list-group-item d-flex justify-content-between gap-3">
+                            <span class="text-secondary">Вік</span>
+                            <strong>{{ profile.age }} років</strong>
+                        </div>
+
+                        <div class="list-group-item d-flex justify-content-between gap-3">
+                            <span class="text-secondary">Зріст</span>
+                            <strong>{{ profile.height }} см</strong>
+                        </div>
+
+                        <div class="list-group-item d-flex justify-content-between gap-3">
+                            <span class="text-secondary">Маса тіла</span>
+                            <strong>{{ profile.weight }} кг</strong>
+                        </div>
+
+                        <div class="list-group-item d-flex justify-content-between gap-3">
+                            <span class="text-secondary">Активність</span>
+                            <strong class="text-end">
+                                {{ profile.get_activity_level_display }}
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notice mb-4">
+                    <div class="fw-semibold mb-1">Пам’ятай про баланс ✿</div>
+                    <div class="small text-secondary">
+                        Розрахунок є орієнтовним. Потреба в енергії залежить від
+                        індивідуальних особливостей, віку, активності та стану здоров’я.
+                    </div>
+                </div>
+
+                <a href="{% url 'edit_profile' %}"
+                   class="btn btn-outline-novira">
+                    Оновити дані
+                </a>
+
+            {% else %}
+
+                <div class="text-center py-3">
+                    <div style="font-size: 42px; color: #849b78;">✳</div>
+
+                    <h2 class="fs-4 fw-bold mt-3">
+                        Заповни свій профіль
+                    </h2>
+
+                    <p class="text-secondary mb-4">
+                        Для розрахунку потрібні вік, стать, зріст і маса тіла.
+                        Також перевір рівень фізичної активності.
+                    </p>
+
+                    <a href="{% url 'edit_profile' %}"
+                       class="btn btn-novira">
+                        Заповнити профіль →
+                    </a>
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="text-center py-4">
+        <div style="color: #849b78; font-size: 24px;">✿</div>
+        <p class="footer-text mb-1">Маленькі кроки — великі зміни.</p>
+        <p class="footer-text mb-0">NOVIRA · Турбота про себе у твоєму ритмі</p>
+    </div>
+
+</main>
+
+</body>
+</html>
